@@ -19,28 +19,28 @@ public struct CdnDeliveryV3MetaAudio: Content, Hashable {
     public var codecSimple: String?
     /** MIME-type for individual stream data chunks (as opposed to a containing playlist). */
     public var mimeType: String?
+    public var bitrate: CdnDeliveryV3MediaBitrateInfoBitrate?
     /** Count of channels carried by the audio stream. */
     public var channelCount: Int?
     /** Count of samples recorded per second. */
     public var samplerate: Int?
-    public var bitrate: CdnDeliveryV3MediaBitrateInfoBitrate?
 
-    public init(codec: String? = nil, codecSimple: String? = nil, mimeType: String? = nil, channelCount: Int? = nil, samplerate: Int? = nil, bitrate: CdnDeliveryV3MediaBitrateInfoBitrate? = nil) {
+    public init(codec: String? = nil, codecSimple: String? = nil, mimeType: String? = nil, bitrate: CdnDeliveryV3MediaBitrateInfoBitrate? = nil, channelCount: Int? = nil, samplerate: Int? = nil) {
         self.codec = codec
         self.codecSimple = codecSimple
         self.mimeType = mimeType
+        self.bitrate = bitrate
         self.channelCount = channelCount
         self.samplerate = samplerate
-        self.bitrate = bitrate
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case codec
         case codecSimple
         case mimeType
+        case bitrate
         case channelCount
         case samplerate
-        case bitrate
     }
 
     // Encodable protocol methods
@@ -50,9 +50,9 @@ public struct CdnDeliveryV3MetaAudio: Content, Hashable {
         try container.encodeIfPresent(codec, forKey: .codec)
         try container.encodeIfPresent(codecSimple, forKey: .codecSimple)
         try container.encodeIfPresent(mimeType, forKey: .mimeType)
+        try container.encodeIfPresent(bitrate, forKey: .bitrate)
         try container.encodeIfPresent(channelCount, forKey: .channelCount)
         try container.encodeIfPresent(samplerate, forKey: .samplerate)
-        try container.encodeIfPresent(bitrate, forKey: .bitrate)
     }
 }
 

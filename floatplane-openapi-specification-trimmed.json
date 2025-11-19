@@ -25,7 +25,7 @@
         },
         {
             "name": "AuthV3",
-            "description": "Captchas information."
+            "description": "Sign up, login, 2FA, logout, and captchas information."
         },
         {
             "name": "CDNV2",
@@ -122,6 +122,41 @@
                 ]
             },
             "AuthLoginV2Response": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "description": "Identifying information about the new-logged-in user upon success. May be undefined when `needs2FA` is `true`.",
+                        "$ref": "#/components/schemas/UserModel"
+                    },
+                    "needs2FA": {
+                        "type": "boolean",
+                        "description": "If true, the user has not yet been authenticated, and will need to submit the 2FA token to complete authentication."
+                    }
+                },
+                "required": [
+                    "needs2FA"
+                ]
+            },
+            "AuthLoginV3Request": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "captchaToken": {
+                        "type": "string",
+                        "description": "The Google Recaptcha v2/v3 token to verify the request. On web browsers, this is required. For mobile or TV applications, this is not required only if the User-Agent indicates so (e.g., if the User-Agent contains \"CFNetwork\" in its value). Otherwise, the application would have to supply a valid captcha token, which can be difficult to obtain dynamically in some scenarios. In this case, this should be undefined (no key), not null."
+                    }
+                },
+                "required": [
+                    "username",
+                    "password"
+                ]
+            },
+            "AuthLoginV3Response": {
                 "type": "object",
                 "properties": {
                     "user": {
@@ -729,7 +764,7 @@
                         "nullable": true
                     },
                     "totalIncome": {
-                        "type": "integer",
+                        "type": "number",
                         "description": "The total amount of monthly income for this creator. This field tends to always be $0 for regular users.",
                         "nullable": true
                     },
@@ -1247,6 +1282,47 @@
                                 "order"
                             ]
                         }
+                    },
+                    "textTracks": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "description": "Text track identifier."
+                                },
+                                "src": {
+                                    "type": "string",
+                                    "format": "url",
+                                    "description": "URL to a text track file, usually .vtt files."
+                                },
+                                "kind": {
+                                    "type": "string",
+                                    "description": "Usually 'caption'."
+                                },
+                                "language": {
+                                    "type": "string",
+                                    "description": "Language code, e.g. 'en'."
+                                },
+                                "generated": {
+                                    "type": "boolean",
+                                    "description": "Whether the text track has been generated."
+                                },
+                                "processing": {
+                                    "type": "boolean",
+                                    "description": "Whether the text track is processing."
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "src",
+                                "kind",
+                                "language",
+                                "generated",
+                                "processing"
+                            ]
+                        }
                     }
                 },
                 "required": [
@@ -1451,6 +1527,14 @@
                     "property",
                     "newValue"
                 ]
+            },
+            "UserStatusV3Response": {
+                "type": "object",
+                "properties": {
+                    "selfUser": {
+                        "$ref": "#/components/schemas/UserSelfV3Response"
+                    }
+                }
             },
             "UserSelfV3Response": {
                 "type": "object",
@@ -1839,26 +1923,19 @@
                         "type": "string"
                     },
                     "owner": {
-                        "oneOf": [
-                            {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "id": {
                                 "type": "string"
                             },
-                            {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                    "id": {
-                                        "type": "string"
-                                    },
-                                    "username": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "id",
-                                    "username"
-                                ]
+                            "username": {
+                                "type": "string"
                             }
+                        },
+                        "required": [
+                            "id",
+                            "username"
                         ]
                     },
                     "title": {
@@ -1944,7 +2021,8 @@
                         }
                     },
                     "card": {
-                        "$ref": "#/components/schemas/ImageModel"
+                        "$ref": "#/components/schemas/ImageModel",
+                        "nullable": true
                     }
                 },
                 "required": [
@@ -2324,7 +2402,6 @@
                     "title",
                     "description",
                     "price",
-                    "priceYearly",
                     "currency",
                     "logo",
                     "interval",
@@ -3069,7 +3146,8 @@
                         "type": "string"
                     },
                     "paymentCancelled": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "nullable": true
                     },
                     "plan": {
                         "$ref": "#/components/schemas/SubscriptionPlanModel"
@@ -3693,6 +3771,264 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/AuthLoginV2Response"
+                                },
+                                "example": {
+                                    "user": {
+                                        "id": "0123456789abcdef01234567",
+                                        "username": "my_username",
+                                        "profileImage": {
+                                            "width": 512,
+                                            "height": 512,
+                                            "path": "https://pbs.floatplane.com/profile_images/default/user12.png",
+                                            "childImages": [
+                                                {
+                                                    "width": 250,
+                                                    "height": 250,
+                                                    "path": "https://pbs.floatplane.com/profile_images/default/user12_250x250.png"
+                                                },
+                                                {
+                                                    "width": 100,
+                                                    "height": 100,
+                                                    "path": "https://pbs.floatplane.com/profile_images/default/user12_100x100.png"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "needs2FA": false
+                                }
+                            }
+                        },
+                        "links": {
+                            "getSubscriptions": {
+                                "operationId": "listUserSubscriptionsV3",
+                                "description": "Upon successful login, the usual next step is to retrieve the current subscriptions for the user.",
+                                "parameters": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400BadRequest"
+                    },
+                    "401": {
+                        "description": "Unauthenticated - The login attempt failed, either due to a bad username or password.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404NotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/429TooManyRequests"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/Unexpected"
+                    }
+                }
+            }
+        },
+        "/api/v3/auth/login": {
+            "post": {
+                "operationId": "loginV3",
+                "summary": "Login",
+                "description": "Login to Floatplane with the provided username and password, retrieving the authentication/authorization cookie from the response for subsequent requests.",
+                "tags": [
+                    "AuthV3"
+                ],
+                "security": [],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthLoginV3Request"
+                            },
+                            "example": {
+                                "username": "my_username",
+                                "password": "my_password",
+                                "captchaToken": "..."
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK - Returns the header and information about the logged-in user, including the id, username, and profile image.",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Contains the cookie used in subsequent authenticated requests.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthLoginV3Response"
+                                },
+                                "example": {
+                                    "user": {
+                                        "id": "0123456789abcdef01234567",
+                                        "username": "my_username",
+                                        "profileImage": {
+                                            "width": 512,
+                                            "height": 512,
+                                            "path": "https://pbs.floatplane.com/profile_images/default/user12.png",
+                                            "childImages": [
+                                                {
+                                                    "width": 250,
+                                                    "height": 250,
+                                                    "path": "https://pbs.floatplane.com/profile_images/default/user12_250x250.png"
+                                                },
+                                                {
+                                                    "width": 100,
+                                                    "height": 100,
+                                                    "path": "https://pbs.floatplane.com/profile_images/default/user12_100x100.png"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "needs2FA": false
+                                }
+                            }
+                        },
+                        "links": {
+                            "twoFactorLogin": {
+                                "operationId": "checkFor2faLogin",
+                                "description": "If `$request.needs2FA == true`, then to complete the login process, you will need to submit the user's inputted two-factor token to this endpoint.",
+                                "parameters": {}
+                            },
+                            "getSubscriptions": {
+                                "operationId": "listUserSubscriptionsV3",
+                                "description": "Upon successful login, the usual next step is to retrieve the current subscriptions for the user.",
+                                "parameters": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400BadRequest"
+                    },
+                    "401": {
+                        "description": "Unauthenticated - The login attempt failed, either due to a bad username or password.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404NotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/429TooManyRequests"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/Unexpected"
+                    }
+                }
+            }
+        },
+        "/api/v3/auth/logout": {
+            "post": {
+                "operationId": "logoutV3",
+                "summary": "Logout",
+                "description": "Log out of Floatplane, invalidating the authentication/authorization cookie.",
+                "tags": [
+                    "AuthV3"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Obtain a new authentication/authorization cookie after logging out. This new cookie will not be authenticated to perform subsequent requests.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "OK"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401Unauthenticated"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404NotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/429TooManyRequests"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/Unexpected"
+                    }
+                }
+            }
+        },
+        "/api/v3/auth/checkFor2faLogin": {
+            "post": {
+                "operationId": "checkFor2faLoginV3",
+                "summary": "Check For 2FA Login",
+                "description": "Complete the login process if a two-factor authentication token is required from the beginning of the login process.",
+                "tags": [
+                    "AuthV3"
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CheckFor2faLoginRequest"
+                            },
+                            "example": {
+                                "token": "123456"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK - Returns the header and information about the logged-in user, including the id, username, and profile image.",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Contains the cookie used in subsequent authenticated requests.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthLoginV3Response"
                                 },
                                 "example": {
                                     "user": {
@@ -7201,67 +7537,6 @@
                 }
             }
         },
-        "/api/v3/user/links": {
-            "get": {
-                "operationId": "getExternalLinksV3",
-                "summary": "Get External Links",
-                "description": "Retrieve configured social media links from a user's profile.",
-                "tags": [
-                    "UserV3"
-                ],
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "id",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "required": true,
-                        "description": "The GUID of the user being searched."
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK - User links returned",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserLinksV3Response"
-                                },
-                                "example": {
-                                    "twitch": {
-                                        "url": "https://twitch.tv/myusername",
-                                        "type": {
-                                            "name": "twitch",
-                                            "displayName": "Twitch",
-                                            "hostName": "twitch.tv"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/400BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/401Unauthenticated"
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/403Forbidden"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/404NotFound"
-                    },
-                    "429": {
-                        "$ref": "#/components/responses/429TooManyRequests"
-                    },
-                    "default": {
-                        "$ref": "#/components/responses/Unexpected"
-                    }
-                }
-            }
-        },
         "/api/v3/user/self": {
             "get": {
                 "operationId": "getSelf",
@@ -7303,6 +7578,98 @@
                                     "displayName": "Firstname Lastname",
                                     "creators": [],
                                     "scheduledDeletionDate": null
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401Unauthenticated"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404NotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/429TooManyRequests"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/Unexpected"
+                    }
+                }
+            }
+        },
+        "/api/v3/status": {
+            "get": {
+                "operationId": "getStatus",
+                "summary": "Get Status",
+                "description": "Retrieve more detailed information about the user and status, including their name and email.",
+                "tags": [
+                    "UserV3"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "platform",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "android",
+                                "ios",
+                                "web"
+                            ]
+                        },
+                        "required": true,
+                        "description": "Platform requesting the status."
+                    },
+                    {
+                        "in": "query",
+                        "name": "version",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "description": "Version of the app requesting the status."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK - Information returned",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserStatusV3Response"
+                                },
+                                "example": {
+                                    "selfUser": {
+                                        "id": "0123456789abcdef01234567",
+                                        "username": "my_username",
+                                        "profileImage": {
+                                            "width": 512,
+                                            "height": 512,
+                                            "path": "https://pbs.floatplane.com/profile_images/default/user12.png",
+                                            "childImages": [
+                                                {
+                                                    "width": 250,
+                                                    "height": 250,
+                                                    "path": "https://pbs.floatplane.com/profile_images/default/user12_250x250.png"
+                                                },
+                                                {
+                                                    "width": 100,
+                                                    "height": 100,
+                                                    "path": "https://pbs.floatplane.com/profile_images/default/user12_100x100.png"
+                                                }
+                                            ]
+                                        },
+                                        "email": "testemail@example.com",
+                                        "displayName": "Firstname Lastname",
+                                        "creators": [],
+                                        "scheduledDeletionDate": null
+                                    }
                                 }
                             }
                         }
@@ -9835,6 +10202,16 @@
                                             "height": 720,
                                             "label": "720p",
                                             "order": 2
+                                        }
+                                    ],
+                                    "textTracks": [
+                                        {
+                                            "id": "6823ca1cb3c97e3f8cefe6bb",
+                                            "src": "https://941d59f1900d0a09025413971374845d.r2.cloudflarestorage.com/prod-texttrack/text_tracks/BX3VEUGz2v/AQsb2my1nC6x6XX.vtt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=848bccaff51d5141475de2d2a180f979%2F20250607%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20250607T191449Z&X-Amz-Expires=900&X-Amz-Signature=4787e98e0d22cd06aec5a0d76fa6829138a95582e4d831964004471ff48fb1c1&X-Amz-SignedHeaders=host&response-expires=Sat%2C%2007%20Jun%202025%2019%3A14%3A50%20GMT&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+                                            "kind": "captions",
+                                            "language": "en",
+                                            "generated": false,
+                                            "processing": false
                                         }
                                     ]
                                 }

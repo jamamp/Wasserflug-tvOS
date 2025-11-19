@@ -35,7 +35,7 @@ public struct PlanInfoV2ResponsePlansInner: Content, Hashable {
     public var userIsGrandfathered: Bool?
     public var enabledGlobal: Bool
 
-    public init(id: String, title: String, description: String, price: String?, priceYearly: String?, currency: String, logo: String?, interval: String, featured: Bool, allowGrandfatheredAccess: Bool? = nil, discordServers: [DiscordServerModel], discordRoles: [DiscordRoleModel], createdAt: Date, updatedAt: Date?, enabled: Bool, paymentID: Int?, trialPeriod: Double, creator: String, userIsSubscribed: Bool, userIsGrandfathered: Bool? = nil, enabledGlobal: Bool) {
+    public init(id: String, title: String, description: String, price: String?, priceYearly: String? = nil, currency: String, logo: String?, interval: String, featured: Bool, allowGrandfatheredAccess: Bool? = nil, discordServers: [DiscordServerModel], discordRoles: [DiscordRoleModel], createdAt: Date, updatedAt: Date?, enabled: Bool, paymentID: Int?, trialPeriod: Double, creator: String, userIsSubscribed: Bool, userIsGrandfathered: Bool? = nil, enabledGlobal: Bool) {
         self.id = id
         self.title = title
         self.description = description
@@ -91,7 +91,7 @@ public struct PlanInfoV2ResponsePlansInner: Content, Hashable {
         try container.encode(title, forKey: .title)
         try container.encode(description, forKey: .description)
         try container.encode(price, forKey: .price)
-        try container.encode(priceYearly, forKey: .priceYearly)
+        try container.encodeIfPresent(priceYearly, forKey: .priceYearly)
         try container.encode(currency, forKey: .currency)
         try container.encode(logo, forKey: .logo)
         try container.encode(interval, forKey: .interval)

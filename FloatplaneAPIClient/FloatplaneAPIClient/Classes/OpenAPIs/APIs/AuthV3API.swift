@@ -14,6 +14,77 @@ import AnyCodable
 open class AuthV3API {
 
     /**
+     Check For 2FA Login
+     POST /api/v3/auth/checkFor2faLogin
+     Complete the login process if a two-factor authentication token is required from the beginning of the login process.
+     - API Key:
+       - type: apiKey sails.sid 
+       - name: CookieAuth
+     - responseHeaders: [Set-Cookie(String)]
+     - parameter checkFor2faLoginRequest: (body)  
+     - returns: `EventLoopFuture` of `ClientResponse` 
+     */
+    open class func checkFor2faLoginV3Raw(checkFor2faLoginRequest: CheckFor2faLoginRequest, headers: HTTPHeaders = FloatplaneAPIClientAPI.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
+        let localVariablePath = "/api/v3/auth/checkFor2faLogin"
+        let localVariableURLString = FloatplaneAPIClientAPI.basePath + localVariablePath
+
+        guard let localVariableApiClient = Configuration.apiClient else {
+            fatalError("Configuration.apiClient is not set.")
+        }
+
+        return localVariableApiClient.send(.POST, headers: headers, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try Configuration.apiWrapper(&localVariableRequest)
+            
+            
+            try localVariableRequest.content.encode(checkFor2faLoginRequest, using: Configuration.contentConfiguration.requireEncoder(for: CheckFor2faLoginRequest.defaultContentType))
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
+
+    public enum CheckFor2faLoginV3 {
+        case http200(value: AuthLoginV3Response, raw: ClientResponse)
+        case http400(value: ErrorModel, raw: ClientResponse)
+        case http401(value: ErrorModel, raw: ClientResponse)
+        case http403(value: ErrorModel, raw: ClientResponse)
+        case http404(value: ErrorModel, raw: ClientResponse)
+        case http429(raw: ClientResponse)
+        case http0(value: ErrorModel, raw: ClientResponse)
+    }
+
+    /**
+     Check For 2FA Login
+     POST /api/v3/auth/checkFor2faLogin
+     Complete the login process if a two-factor authentication token is required from the beginning of the login process.
+     - API Key:
+       - type: apiKey sails.sid 
+       - name: CookieAuth
+     - responseHeaders: [Set-Cookie(String)]
+     - parameter checkFor2faLoginRequest: (body)  
+     - returns: `EventLoopFuture` of `CheckFor2faLoginV3` 
+     */
+    open class func checkFor2faLoginV3(checkFor2faLoginRequest: CheckFor2faLoginRequest, headers: HTTPHeaders = FloatplaneAPIClientAPI.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<CheckFor2faLoginV3> {
+        return checkFor2faLoginV3Raw(checkFor2faLoginRequest: checkFor2faLoginRequest, headers: headers, beforeSend: beforeSend).flatMapThrowing { response -> CheckFor2faLoginV3 in
+            switch response.status.code {
+            case 200:
+                return .http200(value: try response.content.decode(AuthLoginV3Response.self, using: Configuration.contentConfiguration.requireDecoder(for: AuthLoginV3Response.defaultContentType)), raw: response)
+            case 400:
+                return .http400(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 404:
+                return .http404(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 429:
+                return .http429(raw: response)
+            default:
+                return .http0(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            }
+        }
+    }
+
+    /**
      Get Captcha Info
      GET /api/v3/auth/captcha/info
      Gets the site keys used for Google Recaptcha V2 and V3. These are useful when providing a captcha token when logging in or signing up.
@@ -57,6 +128,139 @@ open class AuthV3API {
             switch response.status.code {
             case 200:
                 return .http200(value: try response.content.decode(GetCaptchaInfoResponse.self, using: Configuration.contentConfiguration.requireDecoder(for: GetCaptchaInfoResponse.defaultContentType)), raw: response)
+            case 400:
+                return .http400(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 404:
+                return .http404(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 429:
+                return .http429(raw: response)
+            default:
+                return .http0(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            }
+        }
+    }
+
+    /**
+     Login
+     POST /api/v3/auth/login
+     Login to Floatplane with the provided username and password, retrieving the authentication/authorization cookie from the response for subsequent requests.
+     - responseHeaders: [Set-Cookie(String)]
+     - parameter authLoginV3Request: (body)  
+     - returns: `EventLoopFuture` of `ClientResponse` 
+     */
+    open class func loginV3Raw(authLoginV3Request: AuthLoginV3Request, headers: HTTPHeaders = FloatplaneAPIClientAPI.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
+        let localVariablePath = "/api/v3/auth/login"
+        let localVariableURLString = FloatplaneAPIClientAPI.basePath + localVariablePath
+
+        guard let localVariableApiClient = Configuration.apiClient else {
+            fatalError("Configuration.apiClient is not set.")
+        }
+
+        return localVariableApiClient.send(.POST, headers: headers, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try Configuration.apiWrapper(&localVariableRequest)
+            
+            
+            try localVariableRequest.content.encode(authLoginV3Request, using: Configuration.contentConfiguration.requireEncoder(for: AuthLoginV3Request.defaultContentType))
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
+
+    public enum LoginV3 {
+        case http200(value: AuthLoginV3Response, raw: ClientResponse)
+        case http400(value: ErrorModel, raw: ClientResponse)
+        case http401(value: ErrorModel, raw: ClientResponse)
+        case http403(value: ErrorModel, raw: ClientResponse)
+        case http404(value: ErrorModel, raw: ClientResponse)
+        case http429(raw: ClientResponse)
+        case http0(value: ErrorModel, raw: ClientResponse)
+    }
+
+    /**
+     Login
+     POST /api/v3/auth/login
+     Login to Floatplane with the provided username and password, retrieving the authentication/authorization cookie from the response for subsequent requests.
+     - responseHeaders: [Set-Cookie(String)]
+     - parameter authLoginV3Request: (body)  
+     - returns: `EventLoopFuture` of `LoginV3` 
+     */
+    open class func loginV3(authLoginV3Request: AuthLoginV3Request, headers: HTTPHeaders = FloatplaneAPIClientAPI.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<LoginV3> {
+        return loginV3Raw(authLoginV3Request: authLoginV3Request, headers: headers, beforeSend: beforeSend).flatMapThrowing { response -> LoginV3 in
+            switch response.status.code {
+            case 200:
+                return .http200(value: try response.content.decode(AuthLoginV3Response.self, using: Configuration.contentConfiguration.requireDecoder(for: AuthLoginV3Response.defaultContentType)), raw: response)
+            case 400:
+                return .http400(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 404:
+                return .http404(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 429:
+                return .http429(raw: response)
+            default:
+                return .http0(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            }
+        }
+    }
+
+    /**
+     Logout
+     POST /api/v3/auth/logout
+     Log out of Floatplane, invalidating the authentication/authorization cookie.
+     - API Key:
+       - type: apiKey sails.sid 
+       - name: CookieAuth
+     - responseHeaders: [Set-Cookie(String)]
+     - returns: `EventLoopFuture` of `ClientResponse` 
+     */
+    open class func logoutV3Raw(headers: HTTPHeaders = FloatplaneAPIClientAPI.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
+        let localVariablePath = "/api/v3/auth/logout"
+        let localVariableURLString = FloatplaneAPIClientAPI.basePath + localVariablePath
+
+        guard let localVariableApiClient = Configuration.apiClient else {
+            fatalError("Configuration.apiClient is not set.")
+        }
+
+        return localVariableApiClient.send(.POST, headers: headers, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try Configuration.apiWrapper(&localVariableRequest)
+            
+            
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
+
+    public enum LogoutV3 {
+        case http200(value: String, raw: ClientResponse)
+        case http400(value: ErrorModel, raw: ClientResponse)
+        case http401(value: ErrorModel, raw: ClientResponse)
+        case http403(value: ErrorModel, raw: ClientResponse)
+        case http404(value: ErrorModel, raw: ClientResponse)
+        case http429(raw: ClientResponse)
+        case http0(value: ErrorModel, raw: ClientResponse)
+    }
+
+    /**
+     Logout
+     POST /api/v3/auth/logout
+     Log out of Floatplane, invalidating the authentication/authorization cookie.
+     - API Key:
+       - type: apiKey sails.sid 
+       - name: CookieAuth
+     - responseHeaders: [Set-Cookie(String)]
+     - returns: `EventLoopFuture` of `LogoutV3` 
+     */
+    open class func logoutV3(headers: HTTPHeaders = FloatplaneAPIClientAPI.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<LogoutV3> {
+        return logoutV3Raw(headers: headers, beforeSend: beforeSend).flatMapThrowing { response -> LogoutV3 in
+            switch response.status.code {
+            case 200:
+                return .http200(value: try response.content.decode(String.self, using: Configuration.contentConfiguration.requireDecoder(for: String.defaultContentType)), raw: response)
             case 400:
                 return .http400(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
             case 401:

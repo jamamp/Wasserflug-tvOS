@@ -5,13 +5,13 @@ import FloatplaneAPIClient
 
 protocol FPAPIService {
 	/// Auth-related
-	func getUserSelf() async throws -> UserV3API.GetSelf
+	func getUserStatus(platform: UserV3API.Platform_getStatus, version: String) async throws -> UserV3API.GetStatus
 	func listUserSubscriptionsV3() async throws -> [UserSubscriptionModel]
 	func getInfo(creatorGUID: [String]) async throws -> [CreatorModelV2]
 	func getCreator(id: String) async throws -> CreatorModelV3
 	func getUsers(ids: [String]) async throws -> UserInfoV2Response
-	func login(username: String, password: String, captchaToken: String?) -> EventLoopFuture<AuthV2API.Login>
-	func secondFactor(token: String) -> EventLoopFuture<AuthV2API.CheckFor2faLogin>
+	func login(username: String, password: String, captchaToken: String?) -> EventLoopFuture<AuthV3API.LoginV3>
+	func secondFactor(token: String) -> EventLoopFuture<AuthV3API.CheckFor2faLoginV3>
 	
 	/// Creator-related
 	func getHomeContent(ids: [String], limit: Int, lastItems: [ContentCreatorListLastItems]?) async throws -> ContentCreatorListV3Response
@@ -50,10 +50,10 @@ class DefaultFPAPIService: FPAPIService {
 		return logger
 	}()
 	
-	func getUserSelf() async throws -> UserV3API.GetSelf {
+	func getUserStatus(platform: UserV3API.Platform_getStatus, version: String) async throws -> UserV3API.GetStatus {
 		return try await withCheckedThrowingContinuation { continuation in
 			UserV3API
-				.getSelf()
+				.getStatus(platform: platform, version: version)
 				.whenComplete { result in
 					switch result {
 					case let .success(value):
@@ -186,12 +186,12 @@ class DefaultFPAPIService: FPAPIService {
 		}
 	}
 
-	func login(username: String, password: String, captchaToken: String?) -> EventLoopFuture<AuthV2API.Login> {
-		return AuthV2API.login(authLoginV2Request: .init(username: username, password: password, captchaToken: captchaToken))
+	func login(username: String, password: String, captchaToken: String?) -> EventLoopFuture<AuthV3API.LoginV3> {
+		return AuthV3API.loginV3(authLoginV3Request: .init(username: username, password: password, captchaToken: captchaToken))
 	}
 
-	func secondFactor(token: String) -> EventLoopFuture<AuthV2API.CheckFor2faLogin> {
-		return AuthV2API.checkFor2faLogin(checkFor2faLoginRequest: .init(token: token))
+	func secondFactor(token: String) -> EventLoopFuture<AuthV3API.CheckFor2faLoginV3> {
+		return AuthV3API.checkFor2faLoginV3(checkFor2faLoginRequest: .init(token: token))
 	}
 
 	func getHomeContent(ids: [String], limit: Int, lastItems: [ContentCreatorListLastItems]?) async throws -> ContentCreatorListV3Response {
@@ -415,9 +415,9 @@ class MockFPAPIService: FPAPIService {
 		Configuration.apiClient!.eventLoop
 	}
 	
-	func getUserSelf() async throws -> UserV3API.GetSelf {
+	func getUserStatus(platform: UserV3API.Platform_getStatus, version: String) async throws -> UserV3API.GetStatus {
 		return try await withCheckedThrowingContinuation { continuation in
-			continuation.resume(returning: .http200(value: MockData.userSelf, raw: ClientResponse()))
+			continuation.resume(returning: .http200(value: .init(selfUser: MockData.userSelf), raw: ClientResponse()))
 		}
 //		return eventLoop.makeSucceededFuture(.http401(value: ErrorModel(id: "", errors: [], message: ""), raw: ClientResponse()))
 	}
@@ -446,11 +446,11 @@ class MockFPAPIService: FPAPIService {
 		}
 	}
 
-	func login(username: String, password: String, captchaToken: String?) -> EventLoopFuture<AuthV2API.Login> {
+	func login(username: String, password: String, captchaToken: String?) -> EventLoopFuture<AuthV3API.LoginV3> {
 		return eventLoop.makeSucceededFuture(.http200(value: .init(user: nil, needs2FA: true), raw: ClientResponse()))
 	}
 
-	func secondFactor(token: String) -> EventLoopFuture<AuthV2API.CheckFor2faLogin> {
+	func secondFactor(token: String) -> EventLoopFuture<AuthV3API.CheckFor2faLoginV3> {
 		return eventLoop.makeSucceededFuture(.http200(value: .init(user: .init(id: "1", username: "my_username", profileImage: .init(width: 1, height: 1, path: "", childImages: nil)), needs2FA: false), raw: ClientResponse()))
 	}
 

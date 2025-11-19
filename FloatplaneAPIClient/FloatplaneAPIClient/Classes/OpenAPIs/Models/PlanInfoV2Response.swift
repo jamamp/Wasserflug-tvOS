@@ -16,10 +16,10 @@ public struct PlanInfoV2Response: Content, Hashable {
     /** The total number of subscribers for this creator. */
     public var totalSubscriberCount: Int?
     /** The total amount of monthly income for this creator. This field tends to always be $0 for regular users. */
-    public var totalIncome: Int?
+    public var totalIncome: Double?
     public var plans: [PlanInfoV2ResponsePlansInner]
 
-    public init(totalSubscriberCount: Int?, totalIncome: Int?, plans: [PlanInfoV2ResponsePlansInner]) {
+    public init(totalSubscriberCount: Int?, totalIncome: Double?, plans: [PlanInfoV2ResponsePlansInner]) {
         self.totalSubscriberCount = totalSubscriberCount
         self.totalIncome = totalIncome
         self.plans = plans

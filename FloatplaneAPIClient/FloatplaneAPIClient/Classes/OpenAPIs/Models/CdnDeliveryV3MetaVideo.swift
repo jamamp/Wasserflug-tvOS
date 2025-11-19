@@ -25,19 +25,19 @@ public struct CdnDeliveryV3MetaVideo: Content, Hashable {
     public var height: Int?
     /** Whether or not this data stream carries HDR content. */
     public var isHdr: Bool?
+    public var bitrate: CdnDeliveryV3MediaBitrateInfoBitrate?
     /** Maximum count of frames presented per second for the video. */
     public var fps: Double?
-    public var bitrate: CdnDeliveryV3MediaBitrateInfoBitrate?
 
-    public init(codec: String? = nil, codecSimple: String? = nil, mimeType: String? = nil, width: Int? = nil, height: Int? = nil, isHdr: Bool? = nil, fps: Double? = nil, bitrate: CdnDeliveryV3MediaBitrateInfoBitrate? = nil) {
+    public init(codec: String? = nil, codecSimple: String? = nil, mimeType: String? = nil, width: Int? = nil, height: Int? = nil, isHdr: Bool? = nil, bitrate: CdnDeliveryV3MediaBitrateInfoBitrate? = nil, fps: Double? = nil) {
         self.codec = codec
         self.codecSimple = codecSimple
         self.mimeType = mimeType
         self.width = width
         self.height = height
         self.isHdr = isHdr
-        self.fps = fps
         self.bitrate = bitrate
+        self.fps = fps
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -47,8 +47,8 @@ public struct CdnDeliveryV3MetaVideo: Content, Hashable {
         case width
         case height
         case isHdr
-        case fps
         case bitrate
+        case fps
     }
 
     // Encodable protocol methods
@@ -61,8 +61,8 @@ public struct CdnDeliveryV3MetaVideo: Content, Hashable {
         try container.encodeIfPresent(width, forKey: .width)
         try container.encodeIfPresent(height, forKey: .height)
         try container.encodeIfPresent(isHdr, forKey: .isHdr)
-        try container.encodeIfPresent(fps, forKey: .fps)
         try container.encodeIfPresent(bitrate, forKey: .bitrate)
+        try container.encodeIfPresent(fps, forKey: .fps)
     }
 }
 

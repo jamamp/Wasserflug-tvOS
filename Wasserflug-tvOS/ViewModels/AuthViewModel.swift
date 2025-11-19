@@ -31,9 +31,11 @@ class AuthViewModel: BaseViewModel, ObservableObject {
 			logger.info("Determining authentication status. Retrieving the self object and list of subscriptions.")
 			
 			// Get self and subscriptions
-			let userSelfResponse: UserV3API.GetSelf
+			let userSelfResponse: UserV3API.GetStatus
 			do {
-				userSelfResponse = try await fpApiService.getUserSelf()
+				let appVersion = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "<unknown>"
+				let bundleVersion = (Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "<unknown>"
+				userSelfResponse = try await fpApiService.getUserStatus(platform: .web, version: "Wasserflug-tvOS-\(appVersion)-\(bundleVersion)")
 			} catch {
 				self.logger.error("Encountered an unexpected error while loading user self. Reporting the error to the user. Showing login screen. Error: \(String(reflecting: error))")
 				self.isLoggedIn = false
@@ -45,8 +47,15 @@ class AuthViewModel: BaseViewModel, ObservableObject {
 			
 			let userSelf: UserSelfV3Response
 			switch userSelfResponse {
-			case let .http200(value: value, raw: _):
-				userSelf = value
+			case let .http200(value: value, raw: raw):
+				guard let selfUser = value.selfUser else {
+					self.logger.notice("Received invalid responses for user self and user subscriptions. Assuming user is not logged in. Showing login screen to user.")
+					self.logger.debug("User self response: \(raw)")
+					self.isLoggedIn = false
+					self.isLoadingAuthStatus = false
+					return
+				}
+				userSelf = selfUser
 			case let .http403(value: error, raw: _):
 				self.logger.notice("Received invalid responses for user self and user subscriptions. Assuming user is not logged in. Showing login screen to user.")
 				self.logger.debug("User self response: \(error)")

@@ -13,6 +13,7 @@ import Vapor
 
 public struct CdnDeliveryV3Response: Content, Hashable {
 
+    static let groupsRule = ArrayRule(minItems: 0, maxItems: nil, uniqueItems: false)
     /** `groups` may consist of zero or more elements. */
     public var groups: [CdnDeliveryV3Group]
 

@@ -89,81 +89,6 @@ open class UserV3API {
     }
 
     /**
-     Get External Links
-     GET /api/v3/user/links
-     Retrieve configured social media links from a user's profile.
-     - API Key:
-       - type: apiKey sails.sid 
-       - name: CookieAuth
-     - parameter id: (query) The GUID of the user being searched. 
-     - returns: `EventLoopFuture` of `ClientResponse` 
-     */
-    open class func getExternalLinksV3Raw(id: String, headers: HTTPHeaders = FloatplaneAPIClientAPI.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
-        let localVariablePath = "/api/v3/user/links"
-        let localVariableURLString = FloatplaneAPIClientAPI.basePath + localVariablePath
-
-        guard let localVariableApiClient = Configuration.apiClient else {
-            fatalError("Configuration.apiClient is not set.")
-        }
-
-        return localVariableApiClient.send(.GET, headers: headers, to: URI(string: localVariableURLString)) { localVariableRequest in
-            try Configuration.apiWrapper(&localVariableRequest)
-            
-            struct QueryParams: Content {
-                var id: String
-
-                enum CodingKeys: String, CodingKey {
-                    case id = "id"
-                }
-            }
-            try localVariableRequest.query.encode(QueryParams(id: id))
-            
-            try beforeSend(&localVariableRequest)
-        }
-    }
-
-    public enum GetExternalLinksV3 {
-        case http200(value: [String: UserLinksV3ResponseValue], raw: ClientResponse)
-        case http400(value: ErrorModel, raw: ClientResponse)
-        case http401(value: ErrorModel, raw: ClientResponse)
-        case http403(value: ErrorModel, raw: ClientResponse)
-        case http404(value: ErrorModel, raw: ClientResponse)
-        case http429(raw: ClientResponse)
-        case http0(value: ErrorModel, raw: ClientResponse)
-    }
-
-    /**
-     Get External Links
-     GET /api/v3/user/links
-     Retrieve configured social media links from a user's profile.
-     - API Key:
-       - type: apiKey sails.sid 
-       - name: CookieAuth
-     - parameter id: (query) The GUID of the user being searched. 
-     - returns: `EventLoopFuture` of `GetExternalLinksV3` 
-     */
-    open class func getExternalLinksV3(id: String, headers: HTTPHeaders = FloatplaneAPIClientAPI.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<GetExternalLinksV3> {
-        return getExternalLinksV3Raw(id: id, headers: headers, beforeSend: beforeSend).flatMapThrowing { response -> GetExternalLinksV3 in
-            switch response.status.code {
-            case 200:
-                return .http200(value: try response.content.decode([String: UserLinksV3ResponseValue].self, using: Configuration.contentConfiguration.requireDecoder(for: [String: UserLinksV3ResponseValue].defaultContentType)), raw: response)
-            case 400:
-                return .http400(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
-            case 401:
-                return .http401(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
-            case 403:
-                return .http403(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
-            case 404:
-                return .http404(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
-            case 429:
-                return .http429(raw: response)
-            default:
-                return .http0(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
-            }
-        }
-    }
-
-    /**
      Get Self
      GET /api/v3/user/self
      Retrieve more detailed information about the user, including their name and email.
@@ -213,6 +138,94 @@ open class UserV3API {
             switch response.status.code {
             case 200:
                 return .http200(value: try response.content.decode(UserSelfV3Response.self, using: Configuration.contentConfiguration.requireDecoder(for: UserSelfV3Response.defaultContentType)), raw: response)
+            case 400:
+                return .http400(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 404:
+                return .http404(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            case 429:
+                return .http429(raw: response)
+            default:
+                return .http0(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
+            }
+        }
+    }
+
+    /**
+     * enum for parameter platform
+     */
+    public enum Platform_getStatus: String, CaseIterable, Content {
+        case android = "android"
+        case ios = "ios"
+        case web = "web"
+    }
+
+    /**
+     Get Status
+     GET /api/v3/status
+     Retrieve more detailed information about the user and status, including their name and email.
+     - API Key:
+       - type: apiKey sails.sid 
+       - name: CookieAuth
+     - parameter platform: (query) Platform requesting the status. 
+     - parameter version: (query) Version of the app requesting the status. 
+     - returns: `EventLoopFuture` of `ClientResponse` 
+     */
+    open class func getStatusRaw(platform: Platform_getStatus, version: String, headers: HTTPHeaders = FloatplaneAPIClientAPI.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
+        let localVariablePath = "/api/v3/status"
+        let localVariableURLString = FloatplaneAPIClientAPI.basePath + localVariablePath
+
+        guard let localVariableApiClient = Configuration.apiClient else {
+            fatalError("Configuration.apiClient is not set.")
+        }
+
+        return localVariableApiClient.send(.GET, headers: headers, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try Configuration.apiWrapper(&localVariableRequest)
+            
+            struct QueryParams: Content {
+                var platform: Platform_getStatus
+                var version: String
+
+                enum CodingKeys: String, CodingKey {
+                    case platform = "platform"
+                    case version = "version"
+                }
+            }
+            try localVariableRequest.query.encode(QueryParams(platform: platform, version: version))
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
+
+    public enum GetStatus {
+        case http200(value: UserStatusV3Response, raw: ClientResponse)
+        case http400(value: ErrorModel, raw: ClientResponse)
+        case http401(value: ErrorModel, raw: ClientResponse)
+        case http403(value: ErrorModel, raw: ClientResponse)
+        case http404(value: ErrorModel, raw: ClientResponse)
+        case http429(raw: ClientResponse)
+        case http0(value: ErrorModel, raw: ClientResponse)
+    }
+
+    /**
+     Get Status
+     GET /api/v3/status
+     Retrieve more detailed information about the user and status, including their name and email.
+     - API Key:
+       - type: apiKey sails.sid 
+       - name: CookieAuth
+     - parameter platform: (query) Platform requesting the status. 
+     - parameter version: (query) Version of the app requesting the status. 
+     - returns: `EventLoopFuture` of `GetStatus` 
+     */
+    open class func getStatus(platform: Platform_getStatus, version: String, headers: HTTPHeaders = FloatplaneAPIClientAPI.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<GetStatus> {
+        return getStatusRaw(platform: platform, version: version, headers: headers, beforeSend: beforeSend).flatMapThrowing { response -> GetStatus in
+            switch response.status.code {
+            case 200:
+                return .http200(value: try response.content.decode(UserStatusV3Response.self, using: Configuration.contentConfiguration.requireDecoder(for: UserStatusV3Response.defaultContentType)), raw: response)
             case 400:
                 return .http400(value: try response.content.decode(ErrorModel.self, using: Configuration.contentConfiguration.requireDecoder(for: ErrorModel.defaultContentType)), raw: response)
             case 401:

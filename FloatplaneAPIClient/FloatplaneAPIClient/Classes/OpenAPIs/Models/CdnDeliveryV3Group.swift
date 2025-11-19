@@ -14,6 +14,8 @@ import Vapor
 /** A group is a logical grouping/separation of variants. At this time, there are no examples of more than one group in a response. */
 public struct CdnDeliveryV3Group: Content, Hashable {
 
+    static let originsRule = ArrayRule(minItems: 1, maxItems: nil, uniqueItems: false)
+    static let variantsRule = ArrayRule(minItems: 0, maxItems: nil, uniqueItems: false)
     /** If `origins` is present, it will consist of one or more elements. */
     public var origins: [CdnDeliveryV3Origin]?
     /** `variants` may consist of zero or more elements. */

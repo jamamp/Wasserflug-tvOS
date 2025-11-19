@@ -40,8 +40,9 @@ public struct ContentVideoV3Response: Content, Hashable {
     public var progress: Int?
     public var userInteraction: [UserInteraction]?
     public var levels: [ContentVideoV3ResponseLevelsInner]
+    public var textTracks: [ContentVideoV3ResponseTextTracksInner]?
 
-    public init(id: String, guid: String, title: String, type: String, description: String, releaseDate: Date?, duration: Double, creator: String, likes: Int, dislikes: Int, score: Int, isProcessing: Bool, primaryBlogPost: String, thumbnail: ImageModel, isAccessible: Bool, blogPosts: [String], timelineSprite: ImageModel, progress: Int? = nil, userInteraction: [UserInteraction]?, levels: [ContentVideoV3ResponseLevelsInner]) {
+    public init(id: String, guid: String, title: String, type: String, description: String, releaseDate: Date?, duration: Double, creator: String, likes: Int, dislikes: Int, score: Int, isProcessing: Bool, primaryBlogPost: String, thumbnail: ImageModel, isAccessible: Bool, blogPosts: [String], timelineSprite: ImageModel, progress: Int? = nil, userInteraction: [UserInteraction]?, levels: [ContentVideoV3ResponseLevelsInner], textTracks: [ContentVideoV3ResponseTextTracksInner]? = nil) {
         self.id = id
         self.guid = guid
         self.title = title
@@ -62,6 +63,7 @@ public struct ContentVideoV3Response: Content, Hashable {
         self.progress = progress
         self.userInteraction = userInteraction
         self.levels = levels
+        self.textTracks = textTracks
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -85,6 +87,7 @@ public struct ContentVideoV3Response: Content, Hashable {
         case progress
         case userInteraction
         case levels
+        case textTracks
     }
 
     // Encodable protocol methods
@@ -111,6 +114,7 @@ public struct ContentVideoV3Response: Content, Hashable {
         try container.encodeIfPresent(progress, forKey: .progress)
         try container.encode(userInteraction, forKey: .userInteraction)
         try container.encode(levels, forKey: .levels)
+        try container.encodeIfPresent(textTracks, forKey: .textTracks)
     }
 }
 

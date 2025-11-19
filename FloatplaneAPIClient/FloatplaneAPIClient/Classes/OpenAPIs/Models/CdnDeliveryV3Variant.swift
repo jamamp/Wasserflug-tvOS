@@ -14,6 +14,7 @@ import Vapor
 /** A &#x60;variant&#x60; represents one variant of a source of media. The most common differenitating factor between variants is video resolution, but there may be more variations based on &#x60;isHdr&#x60;, codecs, FPS, etc. It&#39;s possible that groups of variants may be divided into separate &#x60;groups&#x60; elements. */
 public struct CdnDeliveryV3Variant: Content, Hashable {
 
+    static let originsRule = ArrayRule(minItems: 1, maxItems: nil, uniqueItems: false)
     /** A programmatic name for this variant, for use with uniquely identifying this variant. */
     public var name: String
     /** A display-friendly label for this variant, for use in the UI. */

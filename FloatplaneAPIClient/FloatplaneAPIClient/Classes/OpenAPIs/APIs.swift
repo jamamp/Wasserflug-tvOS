@@ -5,15 +5,10 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import Vapor
-
-
-// We reverted the change of FloatplaneAPIClientAPI to FloatplaneAPIClient introduced in https://github.com/OpenAPITools/openapi-generator/pull/9624
-// Because it was causing the following issue https://github.com/OpenAPITools/openapi-generator/issues/9953
-// If you are affected by this issue, please consider removing the following two lines,
-// By setting the option removeMigrationProjectNameClass to true in the generator
-@available(*, deprecated, renamed: "FloatplaneAPIClientAPI")
-public typealias FloatplaneAPIClient = FloatplaneAPIClientAPI
 
 open class FloatplaneAPIClientAPI {
     public static var basePath = "https://www.floatplane.com"
