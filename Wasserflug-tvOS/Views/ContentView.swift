@@ -116,7 +116,8 @@ struct ContentView: View {
 	@ViewBuilder func view(for route: WasserflugRoute) -> some View {
 		switch route {
 		case .login:
-			LoginView(viewModel: viewModel)
+//			LoginView(viewModel: viewModel)
+			LoginView2(viewModel: viewModel)
 		case .secondFactor:
 			SecondFactorView(viewModel: viewModel)
 		case let .blogPostView(blogPostId: blogPostId, autoPlay: autoPlay):

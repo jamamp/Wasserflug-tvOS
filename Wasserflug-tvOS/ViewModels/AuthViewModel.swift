@@ -49,7 +49,7 @@ class AuthViewModel: BaseViewModel, ObservableObject {
 			switch userSelfResponse {
 			case let .http200(value: value, raw: raw):
 				guard let selfUser = value.selfUser else {
-					self.logger.notice("Received invalid responses for user self and user subscriptions. Assuming user is not logged in. Showing login screen to user.")
+					self.logger.notice("Received invalid 200 response for user self and user subscriptions. Assuming user is not logged in. Showing login screen to user.")
 					self.logger.debug("User self response: \(raw)")
 					self.isLoggedIn = false
 					self.isLoadingAuthStatus = false
@@ -57,7 +57,7 @@ class AuthViewModel: BaseViewModel, ObservableObject {
 				}
 				userSelf = selfUser
 			case let .http403(value: error, raw: _):
-				self.logger.notice("Received invalid responses for user self and user subscriptions. Assuming user is not logged in. Showing login screen to user.")
+				self.logger.notice("Received invalid 403 response for user self and user subscriptions. Assuming user is not logged in. Showing login screen to user.")
 				self.logger.debug("User self response: \(error)")
 				self.isLoggedIn = false
 				self.isLoadingAuthStatus = false

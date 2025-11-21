@@ -3,6 +3,7 @@ import FloatplaneAPIClient
 import Vapor
 import os
 import Logging
+import OAuthKit
 
 @main
 struct Wasserflug_tvOSApp: App {
@@ -25,7 +26,8 @@ struct Wasserflug_tvOSApp: App {
 		return logger
 	}
 	
-	let vaporApp = Vapor.Application(.production, .createNew)
+	var oauth: OAuth = .init()
+	let vaporApp = Vapor.Application(.production, .singleton)
 	let fpApiService: FPAPIService = DefaultFPAPIService()
 	let authViewModel: AuthViewModel
 	let persistenceController = PersistenceController.shared
@@ -37,9 +39,24 @@ struct Wasserflug_tvOSApp: App {
 		let bundleVersion = (Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "<unknown>"
 		Wasserflug_tvOSApp.setHttp(header: "User-Agent", value: "Wasserflug tvOS App version \(appVersion)-\(bundleVersion), CFNetwork")
 		
+		oauth = .init(providers: [.init(
+			id: "https://auth.floatplane.com/realms/floatplane-pp",
+			authorizationURL: URL(string: "https://auth.floatplane.com/realms/floatplane-pp/protocol/openid-connect/auth")!,
+			accessTokenURL: URL(string: "https://auth.floatplane.com/realms/floatplane-pp/protocol/openid-connect/token")!,
+			deviceCodeURL: URL(string: "https://auth.floatplane.com/realms/floatplane-pp/protocol/openid-connect/auth/device")!,
+			clientID: "hydravion",
+			clientSecret: nil,
+			encodeHttpBody: true,
+			customUserAgent: "Wasserflug tvOS App version \(appVersion)-\(bundleVersion), CFNetwork",
+			debug: true,
+		)], options: [
+			.autoRefresh: true,
+		])
+		
 		// Attempt to use any previous authentication cookies, so the user does
 		// not need to login on every app start.
 		FloatplaneAPIClientAPI.loadAuthenticationCookiesFromStorage()
+		FloatplaneAPIClientAPI.basePath = "https://pp.floatplane.com"
 		
 		// Use FP's date format for JSON encoding/decoding.
 		let fpDateFormatter = DateFormatter()
@@ -57,15 +74,23 @@ struct Wasserflug_tvOSApp: App {
 			])
 		})
 		
+		// Create and store in @State the main view model.
+		authViewModel = AuthViewModel(fpApiService: fpApiService)
+	}
+	
+	func setup() {
 		// Bootstrap API/Network logging.
 		Configuration.apiClient = vaporApp.client
 			.logging(to: Wasserflug_tvOSApp.networkLogger)
 		Configuration.apiWrapper = { clientRequest in
+			switch oauth.state {
+			case let .authorized(provider, auth):
+				clientRequest.headers.bearerAuthorization = .init(token: auth.token.accessToken)
+			default:
+				break
+			}
 			Wasserflug_tvOSApp.networkLogger.info("Sending \(clientRequest.method) request to \(clientRequest.url)")
 		}
-		
-		// Create and store in @State the main view model.
-		authViewModel = AuthViewModel(fpApiService: fpApiService)
 	}
 	
 	var body: some Scene {
@@ -73,6 +98,10 @@ struct Wasserflug_tvOSApp: App {
 			ContentView(viewModel: authViewModel)
 				.environment(\.fpApiService, fpApiService)
 				.environment(\.managedObjectContext, persistenceController.container.viewContext)
+				.environment(oauth)
+				.onAppear {
+					setup()
+				}
 		}
 	}
 	

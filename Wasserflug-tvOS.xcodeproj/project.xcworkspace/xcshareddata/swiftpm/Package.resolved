@@ -56,6 +56,15 @@
         }
       },
       {
+        "package": "OAuthKit",
+        "repositoryURL": "https://github.com/jamamp/OAuthKit",
+        "state": {
+          "branch": null,
+          "revision": "824e08a1da637f9104fd56430c24ff20d68eb534",
+          "version": null
+        }
+      },
+      {
         "package": "routing-kit",
         "repositoryURL": "https://github.com/vapor/routing-kit.git",
         "state": {

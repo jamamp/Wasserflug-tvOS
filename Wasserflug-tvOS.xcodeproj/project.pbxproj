@@ -15,6 +15,8 @@
 		E71FDB3C27D3F89200A9C88B /* Swift+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71FDB3B27D3F89200A9C88B /* Swift+Extensions.swift */; };
 		E71FDB7927E66D7E00A9C88B /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71FDB7827E66D7E00A9C88B /* Persistence.swift */; };
 		E71FDB7C27E66DB100A9C88B /* Wasserflug.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E71FDB7A27E66DB100A9C88B /* Wasserflug.xcdatamodeld */; };
+		E729FC6A2ECD8FAF0032950E /* LoginView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E729FC692ECD8FAF0032950E /* LoginView2.swift */; };
+		E729FC6D2ED042FA0032950E /* OAuthKit in Frameworks */ = {isa = PBXBuildFile; productRef = E729FC6C2ED042FA0032950E /* OAuthKit */; };
 		E72E39732A3F8CF000F33C67 /* FPColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72E39722A3F8CF000F33C67 /* FPColors.swift */; };
 		E72E39752A3F8D0400F33C67 /* NavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72E39742A3F8D0400F33C67 /* NavigationCoordinator.swift */; };
 		E72E39772A3F8D8100F33C67 /* NotificationName+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72E39762A3F8D8100F33C67 /* NotificationName+Extensions.swift */; };
@@ -118,6 +120,7 @@
 		E71FDB3B27D3F89200A9C88B /* Swift+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Swift+Extensions.swift"; sourceTree = "<group>"; };
 		E71FDB7827E66D7E00A9C88B /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		E71FDB7B27E66DB100A9C88B /* Wasserflug.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Wasserflug.xcdatamodel; sourceTree = "<group>"; };
+		E729FC692ECD8FAF0032950E /* LoginView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView2.swift; sourceTree = "<group>"; };
 		E72E39722A3F8CF000F33C67 /* FPColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FPColors.swift; sourceTree = "<group>"; };
 		E72E39742A3F8D0400F33C67 /* NavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCoordinator.swift; sourceTree = "<group>"; };
 		E72E39762A3F8D8100F33C67 /* NotificationName+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationName+Extensions.swift"; sourceTree = "<group>"; };
@@ -201,6 +204,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E75337BC27CB07900010E3D2 /* FloatplaneAPIClient in Frameworks */,
+				E729FC6D2ED042FA0032950E /* OAuthKit in Frameworks */,
 				E7304FBB2A86FE730008DE93 /* FloatplaneAPIAsync in Frameworks */,
 				E7E713332CB4EB19003B8A0F /* MultipartKit in Frameworks */,
 				E7304FAE2A86F9B60008DE93 /* SocketIO in Frameworks */,
@@ -396,6 +400,7 @@
 			children = (
 				E753379C27CB06BE0010E3D2 /* ContentView.swift */,
 				E753379427CB06BE0010E3D2 /* LoginView.swift */,
+				E729FC692ECD8FAF0032950E /* LoginView2.swift */,
 				E753379B27CB06BE0010E3D2 /* SecondFactorView.swift */,
 				E753379D27CB06BE0010E3D2 /* RootTabView.swift */,
 				E74C98A22A080AAC00FDDB9C /* RootTabView2.swift */,
@@ -464,6 +469,7 @@
 				E7304FBA2A86FE730008DE93 /* FloatplaneAPIAsync */,
 				E76D685B2A927EE4009A2374 /* BigNumber */,
 				E7E713322CB4EB19003B8A0F /* MultipartKit */,
+				E729FC6C2ED042FA0032950E /* OAuthKit */,
 			);
 			productName = "Wasserflug-tvOS";
 			productReference = E753373927CAFAFE0010E3D2 /* Wasserflug.app */;
@@ -543,6 +549,7 @@
 				E7304FAC2A86F9B60008DE93 /* XCRemoteSwiftPackageReference "socket" */,
 				E76D685A2A927EE4009A2374 /* XCRemoteSwiftPackageReference "Swift-BigInt" */,
 				E7E713312CB4EB19003B8A0F /* XCRemoteSwiftPackageReference "multipart-kit" */,
+				E729FC6B2ED042FA0032950E /* XCRemoteSwiftPackageReference "OAuthKit" */,
 			);
 			productRefGroup = E753373A27CAFAFE0010E3D2 /* Products */;
 			projectDirPath = "";
@@ -611,6 +618,7 @@
 				E73024B32A95981C008E6DF6 /* RenderedRadioChatter.swift in Sources */,
 				E75337A427CB06BE0010E3D2 /* BlogPostViewModel.swift in Sources */,
 				E75337AC27CB06BE0010E3D2 /* PictureViewModel.swift in Sources */,
+				E729FC6A2ECD8FAF0032950E /* LoginView2.swift in Sources */,
 				E75337B827CB06BE0010E3D2 /* RootTabView.swift in Sources */,
 				E7A2F42C28CE43D800583294 /* LivestreamView.swift in Sources */,
 				E75337A127CB06BE0010E3D2 /* PlayMediaView.swift in Sources */,
@@ -863,7 +871,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 16.0;
+				TVOS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Debug;
 		};
@@ -895,7 +903,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 16.0;
+				TVOS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Release;
 		};
@@ -1017,6 +1025,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		E729FC6B2ED042FA0032950E /* XCRemoteSwiftPackageReference "OAuthKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jamamp/OAuthKit";
+			requirement = {
+				kind = revision;
+				revision = 824e08a1da637f9104fd56430c24ff20d68eb534;
+			};
+		};
 		E7304FAC2A86F9B60008DE93 /* XCRemoteSwiftPackageReference "socket" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
@@ -1060,6 +1076,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E729FC6C2ED042FA0032950E /* OAuthKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E729FC6B2ED042FA0032950E /* XCRemoteSwiftPackageReference "OAuthKit" */;
+			productName = OAuthKit;
+		};
 		E7304FAD2A86F9B60008DE93 /* SocketIO */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E7304FAC2A86F9B60008DE93 /* XCRemoteSwiftPackageReference "socket" */;
