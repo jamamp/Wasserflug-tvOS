@@ -17,6 +17,7 @@
 		E71FDB7C27E66DB100A9C88B /* Wasserflug.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E71FDB7A27E66DB100A9C88B /* Wasserflug.xcdatamodeld */; };
 		E729FC6A2ECD8FAF0032950E /* LoginView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E729FC692ECD8FAF0032950E /* LoginView2.swift */; };
 		E729FC6D2ED042FA0032950E /* OAuthKit in Frameworks */ = {isa = PBXBuildFile; productRef = E729FC6C2ED042FA0032950E /* OAuthKit */; };
+		E729FC702ED390FF0032950E /* EFQRCode in Frameworks */ = {isa = PBXBuildFile; productRef = E729FC6F2ED390FF0032950E /* EFQRCode */; };
 		E72E39732A3F8CF000F33C67 /* FPColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72E39722A3F8CF000F33C67 /* FPColors.swift */; };
 		E72E39752A3F8D0400F33C67 /* NavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72E39742A3F8D0400F33C67 /* NavigationCoordinator.swift */; };
 		E72E39772A3F8D8100F33C67 /* NotificationName+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72E39762A3F8D8100F33C67 /* NotificationName+Extensions.swift */; };
@@ -208,6 +209,7 @@
 				E7304FBB2A86FE730008DE93 /* FloatplaneAPIAsync in Frameworks */,
 				E7E713332CB4EB19003B8A0F /* MultipartKit in Frameworks */,
 				E7304FAE2A86F9B60008DE93 /* SocketIO in Frameworks */,
+				E729FC702ED390FF0032950E /* EFQRCode in Frameworks */,
 				E74C98A62A080B9E00FDDB9C /* DebouncedOnChange in Frameworks */,
 				E76D685C2A927EE4009A2374 /* BigNumber in Frameworks */,
 				E753376B27CB01FD0010E3D2 /* Vapor in Frameworks */,
@@ -470,6 +472,7 @@
 				E76D685B2A927EE4009A2374 /* BigNumber */,
 				E7E713322CB4EB19003B8A0F /* MultipartKit */,
 				E729FC6C2ED042FA0032950E /* OAuthKit */,
+				E729FC6F2ED390FF0032950E /* EFQRCode */,
 			);
 			productName = "Wasserflug-tvOS";
 			productReference = E753373927CAFAFE0010E3D2 /* Wasserflug.app */;
@@ -550,6 +553,7 @@
 				E76D685A2A927EE4009A2374 /* XCRemoteSwiftPackageReference "Swift-BigInt" */,
 				E7E713312CB4EB19003B8A0F /* XCRemoteSwiftPackageReference "multipart-kit" */,
 				E729FC6B2ED042FA0032950E /* XCRemoteSwiftPackageReference "OAuthKit" */,
+				E729FC6E2ED390FF0032950E /* XCRemoteSwiftPackageReference "EFQRCode" */,
 			);
 			productRefGroup = E753373A27CAFAFE0010E3D2 /* Products */;
 			projectDirPath = "";
@@ -1033,6 +1037,14 @@
 				revision = a5b421c37197d90bbb822df85193317ead9a9e36;
 			};
 		};
+		E729FC6E2ED390FF0032950E /* XCRemoteSwiftPackageReference "EFQRCode" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/EFPrefix/EFQRCode";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.3;
+			};
+		};
 		E7304FAC2A86F9B60008DE93 /* XCRemoteSwiftPackageReference "socket" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
@@ -1080,6 +1092,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E729FC6B2ED042FA0032950E /* XCRemoteSwiftPackageReference "OAuthKit" */;
 			productName = OAuthKit;
+		};
+		E729FC6F2ED390FF0032950E /* EFQRCode */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E729FC6E2ED390FF0032950E /* XCRemoteSwiftPackageReference "EFQRCode" */;
+			productName = EFQRCode;
 		};
 		E7304FAD2A86F9B60008DE93 /* SocketIO */ = {
 			isa = XCSwiftPackageProductDependency;
