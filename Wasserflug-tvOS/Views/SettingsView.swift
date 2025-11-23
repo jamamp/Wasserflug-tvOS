@@ -2,11 +2,13 @@ import SwiftUI
 import CoreData
 import Logging
 import FloatplaneAPIClient
+import OAuthKit
 
 struct SettingsView: View {
 	@Namespace var namespace
 	@Environment(\.managedObjectContext) private var viewContext
 	@EnvironmentObject var userInfo: UserInfo
+	@Environment(OAuth.self) var oauth: OAuth
 	
 	@State var showResetViewHistoryConfirmation = false
 	@State var showResetViewHistorySuccess = false
@@ -45,15 +47,15 @@ struct SettingsView: View {
 			HStack {
 				Button(action: {
 					logger.notice("Logging user out")
-					FloatplaneAPIClientAPI.removeAuthenticationCookies()
+//					FloatplaneAPIClientAPI.removeAuthenticationCookies()
+					oauth.clear()
+					
 					NotificationCenter.default.post(name: .loggedOut, object: nil)
 				}, label: {
 					Text("Logout")
 				})
 				.prefersDefaultFocus(in: namespace)
 			}
-//				.frame(maxWidth: .infinity)
-//				.focusSection()
 			
 			HStack {
 				Button(action: {
@@ -62,8 +64,6 @@ struct SettingsView: View {
 					Text(showNewSidebar ? "Show old tab view" : "Show new sidebar")
 				})
 			}
-//				.frame(maxWidth: .infinity)
-//				.focusSection()
 			
 			HStack {
 				Button(action: {

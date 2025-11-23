@@ -124,11 +124,10 @@ struct ContentView: View {
 			BlogPostView(viewModel: BlogPostViewModel(fpApiService: fpApiService,
 													  id: blogPostId),
 						 shouldAutoPlay: autoPlay)
-		case let .searchView(creatorOrChannel: creatorOrChannel, creatorOwner: creatorOwner):
+		case let .searchView(creatorOrChannel: creatorOrChannel):
 			CreatorSearchView(viewModel: CreatorContentViewModel(fpApiService: fpApiService,
 																 managedObjectContext: managedObjectContext,
 																 creatorOrChannel: creatorOrChannel,
-																 creatorOwner: creatorOwner,
 																 livestream: nil),
 							  creatorName: creatorOrChannel.title)
 		case let .livestreamView(creatorId: creatorId, livestreamId: livestreamId):

@@ -146,23 +146,6 @@ class AuthViewModel: BaseViewModel, ObservableObject {
 				"ownerIds": "\(ownerIds)",
 			])
 			
-			let creatorOwners: UserInfoV2Response
-			do {
-				creatorOwners = try await self.fpApiService.getUsers(ids: ownerIds)
-			} catch {
-				self.logger.error("Encountered an unexpected error while loading user subscriptions. Reporting the error to the user. Showing login screen. Error: \(String(reflecting: error))")
-				self.isLoggedIn = false
-				self.isLoadingAuthStatus = false
-				self.authenticationCheckError = error
-				self.showAuthenticationErrorAlert = true
-				return
-			}
-
-			self.logger.notice("Retrieved creator owner(s) information", metadata: [
-				"names": "\(creatorOwners.users.map(\.user.userModelShared.username))",
-			])
-			self.userInfo.creatorOwners = Dictionary(uniqueKeysWithValues: creatorOwners.users.map({ ($0.user.userModelShared.id, $0.user.userModelShared) }))
-			
 			self.isLoadingAuthStatus = false
 		}
 	}
@@ -185,7 +168,7 @@ class AuthViewModel: BaseViewModel, ObservableObject {
 						case let .http200(value: response, raw: clientResponse):
 							self.logger.debug("Successful login raw response: \(clientResponse.plaintextDebugContent)")
 							// Set global cookie
-							FloatplaneAPIClientAPI.storeAuthentifcationCookies(from: clientResponse)
+//							FloatplaneAPIClientAPI.storeAuthentifcationCookies(from: clientResponse)
 							
 							if response.needs2FA {
 								self.logger.notice("Successfully logged in as user '\(username)'. Requires second factor to continue authentication process.")
@@ -276,20 +259,20 @@ class AuthViewModel: BaseViewModel, ObservableObject {
 class UserInfo: ObservableObject {
 	@Published var userSelf: UserSelfV3Response?
 	@Published var userSubscriptions: [UserSubscriptionModel] = []
-	@Published var creators: [String: CreatorModelV3] = [:]
-	@Published var creatorOwners: [String: UserModelShared] = [:] {
+	@Published var creators: [String: CreatorModelV3] = [:] {
 		didSet {
 			setCreatorsInOrder()
 		}
 	}
 
-	@Published var creatorsInOrder: [(CreatorModelV3, UserModelShared)] = []
+	@Published var creatorsInOrder: [CreatorModelV3] = []
 	
 	private func setCreatorsInOrder() {
+		creatorsInOrder = []
 		for sub in userSubscriptions {
-			if !creatorsInOrder.contains(where: { $0.0.id == sub.creator }) {
-				if let creator = creators[sub.creator], let creatorOwner = creatorOwners[creator.owner.id] {
-					creatorsInOrder.append((creator, creatorOwner))
+			if !creatorsInOrder.contains(where: { $0.id == sub.creator }) {
+				if let creator = creators[sub.creator] {
+					creatorsInOrder.append(creator)
 				}
 			}
 		}

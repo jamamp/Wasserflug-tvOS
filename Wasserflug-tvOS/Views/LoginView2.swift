@@ -47,6 +47,8 @@ struct LoginView2: View {
 					case .empty:
 						Text("Empty??")
 					}
+					
+					Spacer()
 				}
 				.multilineTextAlignment(.center)
 				.frame(maxWidth: geometry.size.width * 0.4)
@@ -55,8 +57,10 @@ struct LoginView2: View {
 		}
 		.onAppear {
 			switch oauth.state {
-			case .empty:
-				oauth.authorize(provider: oauth.providers.first!, grantType: .deviceCode)
+			case .empty, .error:
+				if let provider = oauth.providers.first {
+					oauth.authorize(provider: provider, grantType: .deviceCode)
+				}
 			default:
 				break
 			}

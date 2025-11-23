@@ -9,7 +9,7 @@ enum WasserflugRoute: Hashable {
 	
 	// Flow: main content
 	case blogPostView(blogPostId: String, autoPlay: Bool)
-	case searchView(creatorOrChannel: AnyCreatorOrChannel, creatorOwner: AnyUserModelShared)
+	case searchView(creatorOrChannel: AnyCreatorOrChannel)
 	case livestreamView(creatorId: String, livestreamId: String)
 	case videoView(videoAttachment: VideoAttachmentModel, content: ContentPostV3Response, description: AttributedString, beginningWatchTime: Double)
 }

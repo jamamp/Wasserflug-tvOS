@@ -17,7 +17,6 @@ class CreatorContentViewModel: BaseViewModel, ObservableObject {
 	private let fpApiService: FPAPIService
 	let managedObjectContext: NSManagedObjectContext
 	let creatorOrChannel: CreatorOrChannel
-	let creatorOwner: UserModelShared
 	let livestream: LiveStreamModel?
 	var searchDebounce: AnyCancellable? = nil
 	
@@ -48,11 +47,10 @@ class CreatorContentViewModel: BaseViewModel, ObservableObject {
 	lazy var creatorAboutHeader: AttributedString = (try? AttributedString(markdown: String(creatorOrChannel.aboutFixed[..<aboutFirstNewlineIndex]), options: .init(allowsExtendedAttributes: false, interpretedSyntax: .full, failurePolicy: .returnPartiallyParsedIfPossible, languageCode: nil))) ?? AttributedString("")
 	lazy var creatorAboutBody: AttributedString = (try? AttributedString(markdown: String(creatorOrChannel.aboutFixed[aboutFirstNewlineIndex...]), options: .init(allowsExtendedAttributes: false, interpretedSyntax: .full, failurePolicy: .returnPartiallyParsedIfPossible, languageCode: nil))) ?? AttributedString("")
 	
-	init(fpApiService: FPAPIService, managedObjectContext: NSManagedObjectContext, creatorOrChannel: CreatorOrChannel, creatorOwner: UserModelShared, livestream: LiveStreamModel?) {
+	init(fpApiService: FPAPIService, managedObjectContext: NSManagedObjectContext, creatorOrChannel: CreatorOrChannel, livestream: LiveStreamModel?) {
 		self.fpApiService = fpApiService
 		self.managedObjectContext = managedObjectContext
 		self.creatorOrChannel = creatorOrChannel
-		self.creatorOwner = creatorOwner
 		self.livestream = livestream
 		super.init()
 		
@@ -70,7 +68,6 @@ class CreatorContentViewModel: BaseViewModel, ObservableObject {
 		return CreatorContentViewModel(fpApiService: fpApiService,
 									   managedObjectContext: managedObjectContext,
 									   creatorOrChannel: creatorOrChannel,
-									   creatorOwner: creatorOwner,
 									   livestream: livestream)
 	}
 	
@@ -177,7 +174,7 @@ class CreatorContentViewModel: BaseViewModel, ObservableObject {
 
 class MockCreatorContentViewModel: CreatorContentViewModel {
 	init(state: ViewModelState<[BlogPostModelV3]>) {
-		super.init(fpApiService: MockFPAPIService(), managedObjectContext: PersistenceController.preview.container.viewContext, creatorOrChannel: MockData.creatorV3, creatorOwner: MockData.creatorOwners.users[0].user.userModelShared, livestream: MockData.creatorV3.liveStream)
+		super.init(fpApiService: MockFPAPIService(), managedObjectContext: PersistenceController.preview.container.viewContext, creatorOrChannel: MockData.creatorV3, livestream: MockData.creatorV3.liveStream)
 		self.state = state
 	}
 }

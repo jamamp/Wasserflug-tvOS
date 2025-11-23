@@ -55,7 +55,7 @@ struct Wasserflug_tvOSApp: App {
 		
 		// Attempt to use any previous authentication cookies, so the user does
 		// not need to login on every app start.
-		FloatplaneAPIClientAPI.loadAuthenticationCookiesFromStorage()
+//		FloatplaneAPIClientAPI.loadAuthenticationCookiesFromStorage()
 		FloatplaneAPIClientAPI.basePath = "https://pp.floatplane.com"
 		
 		// Use FP's date format for JSON encoding/decoding.

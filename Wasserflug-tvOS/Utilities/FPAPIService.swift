@@ -549,7 +549,6 @@ enum MockData {
 		a.creators = [
 			creatorV3.id: creatorV3,
 		]
-		a.creatorOwners = Dictionary(uniqueKeysWithValues: creatorOwners.users.map({ ($0.user.userModelShared.id, $0.user.userModelShared) }))
 		return a
 	}()
 	

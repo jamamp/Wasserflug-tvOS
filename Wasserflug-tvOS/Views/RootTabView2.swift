@@ -114,11 +114,10 @@ struct RootTabView2: View {
 				.accessibilityHidden(tabSelection == .home ? false : true)
 				.disabled(tabSelection == .home ? false : true)
 
-			ForEach(userInfo.creatorsInOrder, id: \.0.id) { creator, creatorOwner in
+			ForEach(userInfo.creatorsInOrder, id: \.id) { creator in
 				CreatorContentView(viewModel: CreatorContentViewModel(fpApiService: fpApiService,
 																	  managedObjectContext: managedObjectContext,
 																	  creatorOrChannel: creator,
-																	  creatorOwner: creatorOwner,
 																	  livestream: creator.liveStream))
 					.customAppear(tabSelection == .creator(creator.id) ? .appear : .disappear)
 					.opacity(tabSelection == .creator(creator.id) ? 1 : 0)
@@ -129,7 +128,6 @@ struct RootTabView2: View {
 					CreatorContentView(viewModel: CreatorContentViewModel(fpApiService: fpApiService,
 																		  managedObjectContext: managedObjectContext,
 																		  creatorOrChannel: channel,
-																		  creatorOwner: creatorOwner,
 																		  livestream: creator.liveStream))
 						.customAppear(tabSelection == .channel(channel.id) ? .appear : .disappear)
 						.opacity(tabSelection == .channel(channel.id) ? 1 : 0)
@@ -210,7 +208,7 @@ struct RootTabView2: View {
 			ScrollViewReader { proxy in
 				ScrollView {
 					VStack {
-						ForEach(userInfo.creatorsInOrder, id: \.0.id) { creator, creatorOwner in
+						ForEach(userInfo.creatorsInOrder, id: \.id) { creator in
 							button(forCreator: creator)
 								.id(TabSelection.creator(creator.id))
 								.focused($focusedItem, equals: TabSelection.creator(creator.id))

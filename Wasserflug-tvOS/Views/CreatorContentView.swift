@@ -51,7 +51,7 @@ struct CreatorContentView: View {
 			.offset(x: 20, y: -115) // Half the height (150/2=75) + 40pts of padding = 115pt
 			
 			// Search button
-			NavigationLink(value: WasserflugRoute.searchView(creatorOrChannel: AnyCreatorOrChannel(viewModel.creatorOrChannel), creatorOwner: AnyUserModelShared(viewModel.creatorOwner)), label: {
+			NavigationLink(value: WasserflugRoute.searchView(creatorOrChannel: AnyCreatorOrChannel(viewModel.creatorOrChannel)), label: {
 				Label("Search", systemImage: "magnifyingglass")
 			})
 			
