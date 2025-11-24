@@ -40,10 +40,10 @@ struct Wasserflug_tvOSApp: App {
 		Wasserflug_tvOSApp.setHttp(header: "User-Agent", value: "Wasserflug tvOS App version \(appVersion)-\(bundleVersion), CFNetwork")
 		
 		oauth = .init(providers: [.init(
-			id: "https://auth.floatplane.com/realms/floatplane-pp",
-			authorizationURL: URL(string: "https://auth.floatplane.com/realms/floatplane-pp/protocol/openid-connect/auth")!,
-			accessTokenURL: URL(string: "https://auth.floatplane.com/realms/floatplane-pp/protocol/openid-connect/token")!,
-			deviceCodeURL: URL(string: "https://auth.floatplane.com/realms/floatplane-pp/protocol/openid-connect/auth/device")!,
+			id: "https://auth.floatplane.com/realms/floatplane",
+			authorizationURL: URL(string: "https://auth.floatplane.com/realms/floatplane/protocol/openid-connect/auth")!,
+			accessTokenURL: URL(string: "https://auth.floatplane.com/realms/floatplane/protocol/openid-connect/token")!,
+			deviceCodeURL: URL(string: "https://auth.floatplane.com/realms/floatplane/protocol/openid-connect/auth/device")!,
 			clientID: "hydravion",
 			clientSecret: nil,
 			encodeHttpBody: true,
@@ -56,7 +56,7 @@ struct Wasserflug_tvOSApp: App {
 		// Attempt to use any previous authentication cookies, so the user does
 		// not need to login on every app start.
 //		FloatplaneAPIClientAPI.loadAuthenticationCookiesFromStorage()
-		FloatplaneAPIClientAPI.basePath = "https://pp.floatplane.com"
+		FloatplaneAPIClientAPI.basePath = "https://floatplane.com"
 		
 		// Use FP's date format for JSON encoding/decoding.
 		let fpDateFormatter = DateFormatter()
