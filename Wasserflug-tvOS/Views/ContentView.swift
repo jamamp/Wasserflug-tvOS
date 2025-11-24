@@ -2,6 +2,7 @@ import SwiftUI
 import FloatplaneAPIClient
 import NIO
 import Network
+import OAuthKit
 
 struct ContentView: View {
 	
@@ -12,6 +13,7 @@ struct ContentView: View {
 	@Environment(\.colorScheme) var colorScheme
 	@Environment(\.fpApiService) var fpApiService
 	@Environment(\.managedObjectContext) var managedObjectContext
+	@Environment(OAuth.self) var oauth
 	
 	@StateObject var navigationCoordinator = NavigationCoordinator<WasserflugRoute>()
 	@State var hasInitiallyLoaded = false
@@ -135,11 +137,17 @@ struct ContentView: View {
 														  creatorId: creatorId),
 						   fpChatClient: Self.fpChatManager.client(forChannel: livestreamId, selfUserName: viewModel.userInfo.userSelf?.username ?? ""))
 		case let .videoView(videoAttachment: video, content: content, description: description, beginningWatchTime: beginningWatchTime):
-			VideoView(viewModel: VideoViewModel(fpApiService: fpApiService,
-												videoAttachment: video,
-												contentPost: content,
-												description: description),
-					  beginningWatchTime: beginningWatchTime)
+			switch oauth.state {
+			case let .authorized(_, auth):
+				VideoView(viewModel: VideoViewModel(fpApiService: fpApiService,
+													videoAttachment: video,
+													contentPost: content,
+													description: description,
+													bearerToken: auth.token.accessToken),
+						  beginningWatchTime: beginningWatchTime)
+			default:
+				Text("Error! Authorization has expired")
+			}
 		}
 	}
 }

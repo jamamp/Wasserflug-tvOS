@@ -28,6 +28,6 @@ struct VideoView: View {
 
 struct VideoView_Previews: PreviewProvider {
 	static var previews: some View {
-		VideoView(viewModel: VideoViewModel(fpApiService: MockFPAPIService(), videoAttachment: MockData.getBlogPost.videoAttachments!.first!, contentPost: MockData.getBlogPost, description: "Test description"), beginningWatchTime: 0.75)
+		VideoView(viewModel: VideoViewModel(fpApiService: MockFPAPIService(), videoAttachment: MockData.getBlogPost.videoAttachments!.first!, contentPost: MockData.getBlogPost, description: "Test description", bearerToken: "foo"), beginningWatchTime: 0.75)
 	}
 }

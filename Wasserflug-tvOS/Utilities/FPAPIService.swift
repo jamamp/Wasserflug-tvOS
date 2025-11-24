@@ -59,7 +59,7 @@ class DefaultFPAPIService: FPAPIService {
 					case let .success(value):
 						continuation.resume(returning: value)
 					case let .failure(error):
-						self.logger.error("Encountered an unexpected error while loading creator information. Reporting the error to the user. Error: \(String(reflecting: error))")
+						self.logger.error("Encountered an unexpected error while loading user status. Reporting the error to the user. Error: \(String(reflecting: error))")
 						continuation.resume(throwing: error)
 					}
 				}

@@ -37,6 +37,8 @@ class VideoViewModel: BaseViewModel, ObservableObject {
 						   AVPlaybackSpeed(rate: 1.75, localizedName: "x1.75"),
 						   AVPlaybackSpeed(rate: 2.0, localizedName: "x2.0")]
 	
+	private var resourceLoaderDelegate: HLSResourceLoaderDelegate?
+	
 	var avMetadataItems: [AVMetadataItem] {
 		let desc = String(description.characters)
 		
@@ -55,11 +57,14 @@ class VideoViewModel: BaseViewModel, ObservableObject {
 	
 	private(set) var qualityLevels: [String: (URL, CdnDeliveryV3Variant)] = [:]
 	
-	init(fpApiService: FPAPIService, videoAttachment: VideoAttachmentModel, contentPost: ContentPostV3Response, description: AttributedString) {
+	init(fpApiService: FPAPIService, videoAttachment: VideoAttachmentModel, contentPost: ContentPostV3Response, description: AttributedString, bearerToken: String) {
 		self.fpApiService = fpApiService
 		self.videoAttachment = videoAttachment
 		self.contentPost = contentPost
 		self.description = description
+		
+		super.init()
+		self.resourceLoaderDelegate = HLSResourceLoaderDelegate(logger: self.logger, bearerToken: bearerToken)
 	}
 	
 	func load() {
@@ -165,9 +170,47 @@ class VideoViewModel: BaseViewModel, ObservableObject {
 			"url": "\(url)",
 		])
 		
-		let asset = AVURLAsset(url: url, options: [AVURLAssetHTTPCookiesKey: HTTPCookieStorage.shared.cookies as Any])
+//		let testURL = URL(string: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8")!
+		let asset = AVURLAsset(url: url)
 		let templateItem = AVPlayerItem(asset: asset)
 		templateItem.externalMetadata = avMetadataItems
+		
+		let queue = DispatchQueue(label: "com.wasserflug.resourceloader")
+		asset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: queue)
+		
+		NotificationCenter.default.addObserver(
+			forName: .AVPlayerItemFailedToPlayToEndTime,
+			object: templateItem,
+			queue: .main
+		) { notification in
+			self.logger.debug("Notification: \(notification)")
+			if let error = notification.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? Error {
+				self.logger.debug("Playback failed: \(error)")
+				self.logger.debug("Error domain: \(error as NSError).domain")
+				self.logger.debug("Error code: \(error as NSError).code")
+				self.logger.debug("User info: \(error as NSError).userInfo")
+			}
+		}
+
+		// Also observe status changes
+		templateItem.observe(\.status) { item, _ in
+			switch item.status {
+			case .readyToPlay:
+				self.logger.debug("Player ready")
+			case .failed:
+				self.logger.debug("Player failed: \(String(describing: item.error))")
+			case .unknown:
+				self.logger.debug("Player status unknown")
+			@unknown default:
+				break
+			}
+		}
+
+		templateItem.observe(\.error) { item, _ in
+			if let error = item.error {
+				self.logger.debug("Player item error: \(error)")
+			}
+		}
 		
 		return templateItem
 	}
@@ -222,6 +265,90 @@ class VideoViewModel: BaseViewModel, ObservableObject {
 			logger.error("Error saving watch progress for for \(blogPostId) \(videoId): \(String(reflecting: error))")
 			// Otherwise, this has minimal impact on the user of this application.
 			// No need to further handle the error.
+		}
+	}
+}
+
+class HLSResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
+	private let logger: Logger
+	private let bearerToken: String
+	
+	init(logger: Logger, bearerToken: String) {
+		self.logger = logger
+		self.bearerToken = bearerToken
+		super.init()
+	}
+	
+	func resourceLoader(
+		_ resourceLoader: AVAssetResourceLoader,
+		shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest
+	) -> Bool {
+		
+		guard let url = loadingRequest.request.url else {
+			loadingRequest.finishLoading(with: NSError(
+				domain: "HLSResourceLoader",
+				code: -1,
+				userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]
+			))
+			return false
+		}
+		
+		logger.debug("Intercepted request for: \(url)")
+		
+		// Handle the actual request
+		Task {
+			await handleLoadingRequest(loadingRequest, url: url)
+		}
+		
+		return true
+	}
+	
+	private func handleLoadingRequest(
+		_ loadingRequest: AVAssetResourceLoadingRequest,
+		url: URL
+	) async {
+		do {
+			// Create request with bearer token
+			var request = URLRequest(url: url)
+			request.setValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
+			request.setValue("application/octet-stream", forHTTPHeaderField: "Accept")
+			
+			let (data, response) = try await URLSession.shared.data(for: request)
+			
+			guard let httpResponse = response as? HTTPURLResponse else {
+				throw NSError(
+					domain: "HLSResourceLoader",
+					code: -2,
+					userInfo: [NSLocalizedDescriptionKey: "Invalid response type"]
+				)
+			}
+			
+			logger.debug("Key request status: \(httpResponse.statusCode)")
+			
+			guard httpResponse.statusCode == 200 else {
+				throw NSError(
+					domain: "HLSResourceLoader",
+					code: httpResponse.statusCode,
+					userInfo: [NSLocalizedDescriptionKey: "HTTP \(httpResponse.statusCode)"]
+				)
+			}
+			
+			// Provide the response
+			if let contentType = httpResponse.mimeType {
+				loadingRequest.contentInformationRequest?.contentType = contentType
+			}
+			loadingRequest.contentInformationRequest?.contentLength = Int64(data.count)
+			loadingRequest.contentInformationRequest?.isByteRangeAccessSupported = false
+			
+			// Provide the data
+			loadingRequest.dataRequest?.respond(with: data)
+			
+			// Finish loading
+			loadingRequest.finishLoading()
+			
+		} catch {
+			logger.debug("Key request failed: \(error)")
+			loadingRequest.finishLoading(with: error)
 		}
 	}
 }

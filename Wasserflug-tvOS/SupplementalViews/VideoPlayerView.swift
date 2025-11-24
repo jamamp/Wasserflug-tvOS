@@ -26,6 +26,7 @@ struct VideoPlayerView: UIViewControllerRepresentable {
 		logger.debug("Creating AVPlayerViewController instance for playback.", metadata: [
 			"videoId": "\(viewModel.videoAttachment.id)",
 		])
+		
 		let vc = AVPlayerViewController()
 		vc.delegate = context.coordinator
 		vc.speeds = viewModel.supportedSpeeds
