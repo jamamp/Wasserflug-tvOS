@@ -44,7 +44,7 @@ struct Wasserflug_tvOSApp: App {
 			authorizationURL: URL(string: "https://auth.floatplane.com/realms/floatplane/protocol/openid-connect/auth")!,
 			accessTokenURL: URL(string: "https://auth.floatplane.com/realms/floatplane/protocol/openid-connect/token")!,
 			deviceCodeURL: URL(string: "https://auth.floatplane.com/realms/floatplane/protocol/openid-connect/auth/device")!,
-			clientID: "hydravion",
+			clientID: "wasserflug",
 			clientSecret: nil,
 			encodeHttpBody: true,
 			customUserAgent: "Wasserflug tvOS App version \(appVersion)-\(bundleVersion), CFNetwork",
