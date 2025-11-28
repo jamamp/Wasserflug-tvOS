@@ -14,7 +14,7 @@ jobs:
 
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '15.2'
+        xcode-version: '26.1.1'
 
     - name: Build
       run: xcodebuild -project Wasserflug-tvOS.xcodeproj -scheme Wasserflug-tvOS -destination "generic/platform=tvOS Simulator"
