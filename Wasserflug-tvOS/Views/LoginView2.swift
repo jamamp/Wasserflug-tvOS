@@ -34,8 +34,10 @@ struct LoginView2: View {
 						ProgressView()
 					case let .receivedDeviceCode(_, deviceCode):
 						HStack {
-							VStack {
-								Text("Visit \(deviceCode.verificationUri) and enter \(deviceCode.userCode)")
+							VStack(spacing: 20) {
+								Text("Visit")
+								Text(deviceCode.verificationUri).textContentType(.URL)
+								Text("and enter \(deviceCode.userCode)")
 							}
 							.frame(width: 400)
 							if let deviceCodeQrCode {
@@ -129,7 +131,7 @@ struct LoginView2_Previews: PreviewProvider {
 			LoginView2(viewModel: AuthViewModel(fpApiService: MockFPAPIService()))
 				.environment(oauth)
 				.onAppear {
-					oauth.state = .receivedDeviceCode(provider, .init(deviceCode: "{the device code}", userCode: "ABCD-EFGH", verificationUri: "https://example.com", verificationUriComplete: "https://example.com/ABCD-EFGH", expiresIn: 60, interval: 5))
+					oauth.state = .receivedDeviceCode(provider, .init(deviceCode: "{the device code}", userCode: "ABCD-EFGH", verificationUri: "https://example.com/device/auth", verificationUriComplete: "https://example.com/ABCD-EFGH", expiresIn: 60, interval: 5))
 				}
 		}
 	}
