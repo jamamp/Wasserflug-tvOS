@@ -60,7 +60,7 @@ struct LoginView2: View {
 								navigationCoordinator.popToRoot()
 							}
 					case .empty:
-						Text("Empty??")
+						ProgressView()
 					}
 					
 					Spacer()
@@ -73,6 +73,22 @@ struct LoginView2: View {
 		.onAppear {
 			switch oauth.state {
 			case .empty, .error:
+				if let provider = oauth.providers.first {
+					oauth.authorize(provider: provider, grantType: .deviceCode)
+				}
+			case let .receivedDeviceCode(_, deviceCode):
+				if let completeUrl = deviceCode.verificationUriComplete {
+					let generator = try? EFQRCode.Generator(completeUrl, style: .basic(params: .init()))
+					if let image = try? generator?.toImage(width: 300).cgImage {
+						deviceCodeQrCode = image
+					} else {
+						print("Create QRCode image failed!")
+					}
+				}
+			case .authorized:
+				// For some reason we're trying to login while already authorized.
+				// Force the re-auth to continue by clearing and starting a new authorization.
+				oauth.clear()
 				if let provider = oauth.providers.first {
 					oauth.authorize(provider: provider, grantType: .deviceCode)
 				}
