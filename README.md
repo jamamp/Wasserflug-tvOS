@@ -1,73 +1,77 @@
-# Wasserflug tvOS
-An unofficial Floatplane client for Apple TV/tvOS. View it on the Apple TV App Store at https://apps.apple.com/us/app/wasserflug/id1611976921.
+<h1 align="center">Wasserflug</h1>
 
-⚠️ Notice ⚠️: The App Store version is currently out-dated. Getting the Test Flight version is recommended. See below in "Beta Testing" for instructions.
+[![Download on the App Store](./Resources/Download_on_Apple_TV.svg)](https://apps.apple.com/us/app/wasserflug/id1611976921)
 
-Looking for Roku? https://github.com/bmlzootown/Hydravion
+An unofficial [Floatplane](https://www.floatplane.com/) client for tvOS written in **Swift** using **SwiftUI**.
 
-Looking for Android TV? https://github.com/bmlzootown/Hydravion-AndroidTV
+> [!WARNING]
+> The App Store version is currently outdated. Using the [TestFlight](https://testflight.apple.com/join/aYwKPFNF) version is recommended.
+
+> [!TIP]
+> Check out [Hydravion](https://github.com/bmlzootown/Hydravion) for Roku and [Hydravion-AndroidTV](https://github.com/bmlzootown/Hydravion-AndroidTV) for Android TV
 
 ## Screenshots
 
-See https://imgur.com/a/vXAcEJy for screenshots of Wasserflug.
+<div align="center" display="flex">
+  <img src="./Resources/Screenshots/home.jpg" width="40%">
+  <img src="./Resources/Screenshots/ltt.jpg" width="40%">
+  <img src="./Resources/Screenshots/video.jpg" width="40%">
+</div>
 
 ## Features
 
-### Implemented Floatplane Features
-- ✅ Floatplane Login (and with 2FA)
-  - Login via LTT Forum/Discord: See FAQ
-- ✅ Aggregated home screen
-- ✅ Creator screens with proper branding (banner image, profile picture, "About" information)
-  - ✅ Search a creator for videos
-  - ✅ Creator Livestream
-  - ✅ Channel support (branding, search, etc.)
-- ✅ Floatplane tags (view only)
-- ✅ Formatted post descriptions
-- ✅ 4K Support
-- ✅ Watch progress (syncs with Floatplane website)
-- ✅ Attachment views
-  - ✅ Videos
-  - ✅ Pictures
-  - ❌ Audio
-  - ❌ Gallery
-- ❌ Livestream chat
-- ❌ Notifications
-- ❌ Creator discovery
-- ❌ Search by tags
-  - Note: You can currently manually search a tag by typing a `#` before the tag name in the creator's search screen, same as Floatplane.com.
-  - This is more about clicking a tag button to search it automatically.
-- ❌ Picture-in-Picture
+- [x] Floatplane Login with two-factor authentication
+  - [ ] Login via LTT Forum/Discord (See [FAQs](#frequently-asked-questions))
+- [x] Aggregated home screen1
+- [x] Creator screens with proper branding (banner image, profile picture, "About" information)
+  - [x] Search a creator for videos
+  - [x] Creator Livestream
+  - [x] Channel support (branding, search, etc.)
+- [x] Floatplane tags (view only)
+- [x] Formatted post descriptions
+- [x] 4K Support
+- [x] Watch progress (syncs with Floatplane website)
+- [x] Attachment views
+  - [x] Videos
+  - [x] Pictures
+  - [ ] Audio
+  - [ ] Gallery
+- [ ] Livestream chat
+- [ ] Notifications
+- [ ] Creator discovery
+- [ ] Picture-in-picture
+- [ ] Buttons for searching by tags
+
+> [!NOTE]
+> You can manually search a tag by typing a `#` before the tag name
 
 ## Frequently Asked Questions
 
-- Q: I have an grandfathered/OG account on LinusTechTips forums, and normally log in to Floatplane using this account. How do I log in on Wasserflug?
-    - A: When you log in to Floatplane using a Discord or LTT Forum account, an account is made for you in Floatplane as well, with its own password and username (the username is usually copied from the other service). You were asked to create a Floatplane-specific password when you first logged in. This is the information you should use to log in to Wasserflug. If you have forgotten the Floatplane password for this account (because you normally use LTT Forum or Discord to log in), you can go onto the Floatplane website to change your password first.
-- Q: I'm getting an error when logging in, "Logging in was successful, but an error was encountered while loading your user profile."? What do I do?
-    - A: This happens sometimes because of the differences between the LTT subscriptions and other content creators on Floatplane having slightly different data here and there. Let the app developer know over Discord or email and the issue can be sorted out quickly enough!
+**Q: How do I log in using my LinusTechTips Forums or Discord account?**
 
-## Technical
+A: If you normally log in to Floatplane using a Discord or LTT Forums account, a Floatplane account has automatically been created for you. The username for this account will be the same as the other service. The password was set when you logged in for the first time. If you forgot your password, you can use the [forgot password](https://www.floatplane.com/forgot-password) page to reset it.
 
-### Beta Testing
+**Q: How do I fix the following error when logging in: `Logging in was successful, but an error was encountered while loading your user profile`?**
 
-If you would like to enter the beta testing via Test Flight for Wasserflug or to receive advanced updates, please use this Test Flist invite link: https://testflight.apple.com/join/aYwKPFNF.
+A: This happens because of minor backend discrepancies between LTT and other content creators on Floatplane. Please contact the developer on Discord or by email to resolve this issue.
 
-### Development
+## Contributing
 
-Cloning the git repository and opening/running it in Xcode, with some slight changes for provisioning/signing should be all that is needed at this time. There are some dependencies; please allow time for Xcode to automatically fetch those before/during initial compilation.
+### TestFlight
+If you are interested in beta testing Wasserflug, you can find it on [TestFlight](https://testflight.apple.com/join/aYwKPFNF).
 
-This uses an Xcode tvOS SwiftUI template, including a `.xcodeproj` file. Opening the `.xcodeproj` file is the main way of accessing this project. Wasserflug uses SwiftUI instead of UIKit, and targets tvOS 15.0.
+### Building
 
-For accessing the Floatplane API, this uses an accompanying project that maps out the API in the OpenAPI specification for automatic code and documentation generation. Check it out at https://jman012.github.io/FloatplaneAPIDocs/. The `floatplane-openapi-specification-trimmed.json` in this repository is copied over from that project, and the auto-generated code is generated using ``generate-floatplane-api-client.sh` and included in this repository in the `FloatplaneAPIClient` folder.
+1. Clone this repository
+```shell
+$ git clone https://github.com/jamamp/Wasserflug-tvOS
+$ cd Wasserflug-tvOS
+```
+2. Open the `.xcodeproj` project file in Xcode
+3. Click the `Signing & Capabilities` tab
+4. Change `Team` to your account
+5. Build and run the app
 
-### Related
-
-See bmlzootown's Hydravion projects and Discord server and more for other Floatplane-related software and discussion:
-- https://github.com/bmlzootown/Hydravion
-- https://github.com/bmlzootown/Hydravion-AndroidTV
-- https://discord.gg/4xKDGz5M5B
-- https://jman012.github.io/FloatplaneAPIDocs/
-
-# Legal
-Application created by James Linnell.
-
-Wasserflug logo copyright to Yaroslav Shkuro via [Shutterstock](https://www.shutterstock.com/image-vector/small-seaplane-isolated-vector-illustration-single-1091024861).
+## Legal
+- Created by James Linnell
+- Logo from [Shutterstock](https://www.shutterstock.com/image-vector/small-seaplane-isolated-vector-illustration-single-1091024861) copyrighted by Yaroslav Shkuro
